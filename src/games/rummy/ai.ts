@@ -40,7 +40,7 @@ function shouldLayOff(difficulty: ComputerDifficulty, stockLength: number) {
 
 export function runAiTurn(state: GameState): GameState {
   if (state.turn === 0 || state.handOver) return state;
-  if (!state.stock.length && !state.discard.length) return scoreHand({ ...state, message: "Stock exhausted. Hand complete." });
+  if (!state.stock.length) return scoreHand({ ...state, message: "Stock exhausted. Hand complete." });
   const players = state.players.map((player) => ({ ...player, hand: [...player.hand], melds: player.melds.map((meld) => ({ ...meld, cards: [...meld.cards] })) }));
   const stock = [...state.stock];
   const discard = [...state.discard];
@@ -60,7 +60,6 @@ export function runAiTurn(state: GameState): GameState {
     }
   }
   let next = { ...state, players, stock, discard };
-  if (!stock.length && discard.length === 0 && ai.hand.length) return scoreHand({ ...next, message: "Stock exhausted. Hand complete." });
   if (!ai.hand.length) return scoreHand(next);
   const outgoing = chooseAiDiscard(ai.hand, state.difficulty);
   ai.hand = removeCards(ai.hand, [outgoing.id]);
