@@ -85,6 +85,8 @@ export interface GameState {
   players: Player[];
   turn: number;
   drawn: boolean;
+  /** A buried discard pickup must be used in a meld or layoff this turn. */
+  requiredPickupCardId?: string;
   selected: string[];
   message: string;
   handOver: boolean;
