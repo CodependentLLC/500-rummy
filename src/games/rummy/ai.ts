@@ -14,7 +14,7 @@ function connectionScore(card: Card, hand: Card[]) {
 
 
 
-export function chooseAiDiscard(hand: Card[], difficulty: ComputerDifficulty, humanHand: Card[] = []) {
+export function chooseAiDiscard(hand: Card[], difficulty: ComputerDifficulty) {
   if (difficulty !== "hard") return [...hand].sort((left, right) => cardValue(left) - cardValue(right))[0];
   return [...hand].sort((left, right) => {
     const leftPriority = cardValue(left) - connectionScore(left, hand) * 4;
