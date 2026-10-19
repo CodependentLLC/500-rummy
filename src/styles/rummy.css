@@ -1352,3 +1352,20 @@ h1 {
   opacity: 0.9;
   transform: translate(-50%, -50%) scale(1.05);
 }
+
+/* Refined contrast, tactile controls, and accessible keyboard focus */
+button:focus-visible, input:focus-visible, .hand-card:focus-visible {
+  outline: 3px solid var(--gold2);
+  outline-offset: 3px;
+}
+button:not(:disabled) { transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease; }
+@media (hover: hover) and (pointer: fine) {
+  .actions button:not(:disabled):hover, .hand-tools button:not(:disabled):hover, .brand-menu button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.13);
+    box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
