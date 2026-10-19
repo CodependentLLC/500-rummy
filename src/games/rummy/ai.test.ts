@@ -12,10 +12,8 @@ describe("500 Rummy computer difficulty", () => {
     expect(chooseAiDiscard(hand, "normal")?.id).toBe("4♣");
   });
 
-  it("keeps near-meld cards and avoids feeding likely human melds on hard", () => {
+  it("uses only its own hand to protect potential melds on hard", () => {
     const hand = [card("K", "♠"), card("4", "♣"), card("5", "♣"), card("9", "♦")];
-    const humanHand = [card("8", "♦"), card("10", "♦")];
-
-    expect(chooseAiDiscard(hand, "hard", humanHand)?.id).toBe("K♠");
+    expect(chooseAiDiscard(hand, "hard")?.id).toBe("K♠");
   });
 });
