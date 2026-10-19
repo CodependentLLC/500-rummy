@@ -45,7 +45,7 @@ export function GameScreen({ game, tableThemeClass, cardBackClass, setGame, onNe
   const canDraw = isHumanTurn && !game.drawn;
   const canMeld = isHumanTurn && game.drawn && selected.length >= 3 && Boolean(meldType(selected));
   const canLayOff = isHumanTurn && game.drawn && selected.length === 1 && melds.some((meld) => canLay(selected[0], meld));
-  const canDiscard = isHumanTurn && game.drawn && selected.length === 1;
+  const canDiscard = isHumanTurn && game.drawn && selected.length === 1 && !game.requiredPickupCardId;
   const orderedHand = useMemo(() => handOrder === "rank" ? sortByRank(human.hand) : handOrder === "melds" ? groupHandByMelds(human.hand) : sortBySuit(human.hand), [handOrder, human.hand]);
   const groupedMeldIds = useMemo(() => new Set(handOrder === "melds" ? findBestMeldGroups(human.hand).flatMap((group) => group.map((card) => card.id)) : []), [handOrder, human.hand]);
   const handDensity = human.hand.length >= 17 ? "ultra-compact" : human.hand.length >= 11 ? "compact" : "normal";
@@ -168,7 +168,7 @@ export function GameScreen({ game, tableThemeClass, cardBackClass, setGame, onNe
 
       <section className="hand-panel">
         <div className="hand-head">
-          <span>{isHumanTurn ? game.drawn ? "Your Hand — meld, lay off, or drag to discard" : "Your Hand — draw first" : "Your Hand"}</span>
+          <span>{game.requiredPickupCardId ? "Play the picked-up card before discarding" : isHumanTurn ? game.drawn ? "Your Hand — meld, lay off, or drag to discard" : "Your Hand — draw first" : "Your Hand"}</span>
           <span>{points(human.hand)} pts · {human.hand.length} cards{game.selected.length ? ` · ${game.selected.length} selected` : ""}</span>
         </div>
         <div className="hand-tools" aria-label="Hand sorting">
