@@ -12,15 +12,13 @@ function connectionScore(card: Card, hand: Card[]) {
   }, 0);
 }
 
-function humanHelpScore(card: Card, humanHand: Card[]) {
-  return connectionScore(card, humanHand);
-}
 
-export function chooseAiDiscard(hand: Card[], difficulty: ComputerDifficulty, humanHand: Card[] = []) {
+
+export function chooseAiDiscard(hand: Card[], difficulty: ComputerDifficulty) {
   if (difficulty !== "hard") return [...hand].sort((left, right) => cardValue(left) - cardValue(right))[0];
   return [...hand].sort((left, right) => {
-    const leftPriority = cardValue(left) - connectionScore(left, hand) * 4 - humanHelpScore(left, humanHand) * 5;
-    const rightPriority = cardValue(right) - connectionScore(right, hand) * 4 - humanHelpScore(right, humanHand) * 5;
+    const leftPriority = cardValue(left) - connectionScore(left, hand) * 4;
+    const rightPriority = cardValue(right) - connectionScore(right, hand) * 4;
     return rightPriority - leftPriority;
   })[0];
 }
@@ -42,15 +40,17 @@ function shouldLayOff(difficulty: ComputerDifficulty, stockLength: number) {
 
 export function runAiTurn(state: GameState): GameState {
   if (state.turn === 0 || state.handOver) return state;
+  if (!state.stock.length) return scoreHand({ ...state, message: "Stock exhausted. Hand complete." });
   const players = state.players.map((player) => ({ ...player, hand: [...player.hand], melds: player.melds.map((meld) => ({ ...meld, cards: [...meld.cards] })) }));
   const stock = [...state.stock];
   const discard = [...state.discard];
   const ai = players[state.turn];
   ai.hand = drawForAi(state, ai.hand, stock, discard);
-  const bestMeld = possibleMelds(ai.hand)[0];
-  if (bestMeld) {
+  let bestMeld = possibleMelds(ai.hand)[0];
+  while (bestMeld) {
     ai.hand = removeCards(ai.hand, bestMeld.map((card) => card.id));
     ai.melds.push({ id: crypto.randomUUID(), type: meldType(bestMeld)!, cards: sortCards(bestMeld) });
+    bestMeld = possibleMelds(ai.hand)[0];
   }
   for (const card of shouldLayOff(state.difficulty, stock.length) ? [...ai.hand] : []) {
     const target = tableMelds({ ...state, players }).find((meld) => canLay(card, meld));
@@ -61,7 +61,7 @@ export function runAiTurn(state: GameState): GameState {
   }
   let next = { ...state, players, stock, discard };
   if (!ai.hand.length) return scoreHand(next);
-  const outgoing = chooseAiDiscard(ai.hand, state.difficulty, players[0].hand);
+  const outgoing = chooseAiDiscard(ai.hand, state.difficulty);
   ai.hand = removeCards(ai.hand, [outgoing.id]);
   next = { ...next, discard: [...discard, outgoing] };
   if (!ai.hand.length) return scoreHand(next);

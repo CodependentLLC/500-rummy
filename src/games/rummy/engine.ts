@@ -47,7 +47,8 @@ export function selectOnly(state: GameState, id: string): GameState {
 }
 
 export function drawStock(state: GameState): GameState {
-  if (state.turn !== 0 || state.drawn || !state.stock.length || state.handOver) return state;
+  if (state.turn !== 0 || state.drawn || state.handOver) return state;
+  if (!state.stock.length) return scoreHand({ ...state, message: "Stock exhausted. Hand complete." });
   const stock = [...state.stock];
   const card = stock.pop()!;
   const players = state.players.map((player, index) => (index === 0 ? { ...player, hand: sortCards([...player.hand, card]) } : player));
@@ -73,7 +74,7 @@ export function pickupDiscardAt(state: GameState, index: number): GameState {
   const pickup = state.discard.slice(index);
   const discard = state.discard.slice(0, index);
   const players = state.players.map((player, playerIndex) => (playerIndex === 0 ? { ...player, hand: sortCards([...player.hand, ...pickup]) } : player));
-  return { ...state, discard, players, drawn: true, selected: [], message: "Picked up discard." };
+  return { ...state, discard, players, drawn: true, selected: [], requiredPickupCardId: state.discard[index].id, message: "Picked up discard. You must meld or lay off the selected discard before ending your turn." };
 }
 
 export function getGameWinner(players: Player[]) {
@@ -91,24 +92,25 @@ export function scoreHand(state: GameState): GameState {
 export function playSelectedMeld(state: GameState): GameState {
   const cards = selectedCards(state);
   const type = meldType(cards);
+  if (state.turn !== 0 || !state.drawn || state.handOver) return state;
   if (!type) return { ...state, message: "Invalid meld." };
   const players: Player[] = state.players.map((player, index) =>
     index === 0 ? { ...player, hand: removeCards(player.hand, cards.map((card) => card.id)), melds: [...player.melds, { id: crypto.randomUUID(), type, cards: sortCards(cards) }] } : player
   );
-  const next = { ...state, players, selected: [], message: `Played a ${type}.` };
+  const next = { ...state, players, selected: [], requiredPickupCardId: cards.some((card) => card.id === state.requiredPickupCardId) ? undefined : state.requiredPickupCardId, message: `Played a ${type}.` };
   return players[0].hand.length ? next : scoreHand(next);
 }
 
 export function layOff(state: GameState, meldId: string): GameState {
   const card = selectedCards(state)[0];
   const target = tableMelds(state).find((meld) => meld.id === meldId);
-  if (!card || !target || !canLay(card, target)) return state;
+  if (state.turn !== 0 || !state.drawn || state.handOver || !card || !target || !canLay(card, target)) return state;
   const players = state.players.map((player, index) => ({
     ...player,
     hand: index === 0 ? removeCards(player.hand, [card.id]) : player.hand,
     melds: player.melds.map((meld) => (meld.id === meldId ? { ...meld, cards: sortCards([...meld.cards, card]) } : meld))
   }));
-  const next = { ...state, players, selected: [], message: `Laid off ${card.rank}${card.suit}.` };
+  const next = { ...state, players, selected: [], requiredPickupCardId: card.id === state.requiredPickupCardId ? undefined : state.requiredPickupCardId, message: `Laid off ${card.rank}${card.suit}.` };
   return players[0].hand.length ? next : scoreHand(next);
 }
 
@@ -120,9 +122,10 @@ export function layBest(state: GameState) {
 
 export function discardSelected(state: GameState): GameState {
   const card = selectedCards(state)[0];
-  if (!card) return state;
+  if (state.turn !== 0 || !state.drawn || state.handOver || !card) return state;
+  if (state.requiredPickupCardId) return { ...state, message: "Play the picked-up discard in a meld or layoff before discarding." };
   const players = state.players.map((player, index) => (index === 0 ? { ...player, hand: removeCards(player.hand, [card.id]) } : player));
-  const next = { ...state, players, discard: [...state.discard, card], selected: [], drawn: false };
+  const next = { ...state, players, discard: [...state.discard, card], selected: [], drawn: false, requiredPickupCardId: undefined };
   if (!players[0].hand.length) return scoreHand(next);
   return { ...next, turn: (state.turn + 1) % state.players.length, message: `Discarded ${card.rank}${card.suit}.` };
 }
