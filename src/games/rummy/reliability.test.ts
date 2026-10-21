@@ -22,10 +22,32 @@ describe("gameplay reliability regressions", () => {
     expect(picked.requiredPickupCardId).toBe("7♠");
     const attempted = discardSelected({ ...picked, selected: ["K♣"] });
     expect(attempted.players[0].hand).toHaveLength(4);
-    expect(attempted.message).toContain("picked-up discard");
+    expect(attempted.message).toContain("Play a meld");
     const melded = playSelectedMeld({ ...picked, selected: ["7♠", "7♥", "7♦"] });
     expect(melded.requiredPickupCardId).toBeUndefined();
     expect(discardSelected({ ...melded, selected: ["K♣"] }).handOver).toBe(true);
+  });
+
+  it("allows discard after a legal meld that does not contain the chosen discard card", () => {
+    const base = initial();
+    const state = {
+      ...base,
+      discard: [card("7", "♠")],
+      players: base.players.map((p, i) => i ? p : {
+        ...p,
+        hand: [card("7", "♥"), card("7", "♦"), card("4", "♣"), card("5", "♣"), card("6", "♣"), card("K", "♦")],
+        melds: []
+      })
+    };
+    const picked = pickupDiscardAt(state, 0);
+    expect(picked.drawn).toBe(true);
+    expect(picked.requiredPickupCardId).toBe("7♠");
+    const melded = playSelectedMeld({ ...picked, selected: ["4♣", "5♣", "6♣"] });
+    expect(melded.requiredPickupCardId).toBeUndefined();
+    expect(melded.drawn).toBe(true);
+    const discarded = discardSelected({ ...melded, selected: ["K♦"] });
+    expect(discarded.discard.at(-1)?.id).toBe("K♦");
+    expect(discarded.turn).toBe(1);
   });
 
   it("finishes a round when drawing from empty stock", () => {

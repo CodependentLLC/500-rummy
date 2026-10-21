@@ -74,7 +74,7 @@ export function pickupDiscardAt(state: GameState, index: number): GameState {
   const pickup = state.discard.slice(index);
   const discard = state.discard.slice(0, index);
   const players = state.players.map((player, playerIndex) => (playerIndex === 0 ? { ...player, hand: sortCards([...player.hand, ...pickup]) } : player));
-  return { ...state, discard, players, drawn: true, selected: [], requiredPickupCardId: state.discard[index].id, message: "Picked up discard. You must meld or lay off the selected discard before ending your turn." };
+  return { ...state, discard, players, drawn: true, selected: [], requiredPickupCardId: state.discard[index].id, message: "Picked up discard. Play a meld or lay off a card before discarding." };
 }
 
 export function getGameWinner(players: Player[]) {
@@ -97,7 +97,7 @@ export function playSelectedMeld(state: GameState): GameState {
   const players: Player[] = state.players.map((player, index) =>
     index === 0 ? { ...player, hand: removeCards(player.hand, cards.map((card) => card.id)), melds: [...player.melds, { id: crypto.randomUUID(), type, cards: sortCards(cards) }] } : player
   );
-  const next = { ...state, players, selected: [], requiredPickupCardId: cards.some((card) => card.id === state.requiredPickupCardId) ? undefined : state.requiredPickupCardId, message: `Played a ${type}.` };
+  const next = { ...state, players, selected: [], requiredPickupCardId: undefined, message: `Played a ${type}.` };
   return players[0].hand.length ? next : scoreHand(next);
 }
 
@@ -110,7 +110,7 @@ export function layOff(state: GameState, meldId: string): GameState {
     hand: index === 0 ? removeCards(player.hand, [card.id]) : player.hand,
     melds: player.melds.map((meld) => (meld.id === meldId ? { ...meld, cards: sortCards([...meld.cards, card]) } : meld))
   }));
-  const next = { ...state, players, selected: [], requiredPickupCardId: card.id === state.requiredPickupCardId ? undefined : state.requiredPickupCardId, message: `Laid off ${card.rank}${card.suit}.` };
+  const next = { ...state, players, selected: [], requiredPickupCardId: undefined, message: `Laid off ${card.rank}${card.suit}.` };
   return players[0].hand.length ? next : scoreHand(next);
 }
 
@@ -123,7 +123,7 @@ export function layBest(state: GameState) {
 export function discardSelected(state: GameState): GameState {
   const card = selectedCards(state)[0];
   if (state.turn !== 0 || !state.drawn || state.handOver || !card) return state;
-  if (state.requiredPickupCardId) return { ...state, message: "Play the picked-up discard in a meld or layoff before discarding." };
+  if (state.requiredPickupCardId) return { ...state, message: "Play a meld or lay off a card before discarding." };
   const players = state.players.map((player, index) => (index === 0 ? { ...player, hand: removeCards(player.hand, [card.id]) } : player));
   const next = { ...state, players, discard: [...state.discard, card], selected: [], drawn: false, requiredPickupCardId: undefined };
   if (!players[0].hand.length) return scoreHand(next);
