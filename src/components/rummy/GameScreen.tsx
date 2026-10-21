@@ -168,7 +168,7 @@ export function GameScreen({ game, tableThemeClass, cardBackClass, setGame, onNe
 
       <section className="hand-panel">
         <div className="hand-head">
-          <span>{game.requiredPickupCardId ? "Play the picked-up card before discarding" : isHumanTurn ? game.drawn ? "Your Hand — meld, lay off, or drag to discard" : "Your Hand — draw first" : "Your Hand"}</span>
+          <span>{game.requiredPickupCardId ? "Play a meld or lay off a card before discarding" : isHumanTurn ? game.drawn ? "Your Hand — meld, lay off, or drag to discard" : "Your Hand — draw first" : "Your Hand"}</span>
           <span>{points(human.hand)} pts · {human.hand.length} cards{game.selected.length ? ` · ${game.selected.length} selected` : ""}</span>
         </div>
         <div className="hand-tools" aria-label="Hand sorting">
