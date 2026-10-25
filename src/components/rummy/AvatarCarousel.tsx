@@ -16,7 +16,7 @@ export function AvatarCarousel({ selectedId, onChange }: Props) {
       <div className="avatar-carousel">
         <button className="carousel-btn" type="button" aria-label="Previous avatar" onClick={() => move(-1)}>‹</button>
         <div className="avatar-feature">
-          <AvatarImage className="avatar-img" src={avatar.image} name={avatar.name} />
+          <AvatarImage className="avatar-img" src={avatar.image} fallbackSrc={avatar.legacyImage} name={avatar.name} />
           <div className="avatar-name">{avatar.name}</div>
           <div className="avatar-role">{avatar.role}</div>
         </div>
