@@ -125,7 +125,7 @@ export function GameScreen({ game, tableThemeClass, cardBackClass, setGame, onNe
         <div className="players">
           {game.players.map((player) => (
             <div key={player.id} className={`player ${game.turn === player.id && !game.handOver ? "active" : ""}`}>
-              <span className="avatar"><AvatarImage src={player.avatarImage} name={player.avatarName} /></span>
+              <span className="avatar"><AvatarImage src={player.avatarTableImage} fallbackSrc={player.avatarLegacyImage} name={player.avatarName} /></span>
               <div><div className="pname">{player.name}</div><div className="pscore">{player.score} pts · {player.hand.length}</div></div>
             </div>
           ))}

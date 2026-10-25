@@ -27,7 +27,7 @@ export function SeatEditor({ label, seat, excludedAvatarIds = [], onChange }: Pr
       <div className="seat-editor-label">{label}</div>
       <div className="seat-avatar-row">
         <button type="button" aria-label={`Previous avatar for ${label}`} onClick={() => move(-1)}>‹</button>
-        <AvatarImage className="seat-avatar" src={avatar.image} name={avatar.name} />
+        <AvatarImage className="seat-avatar" src={avatar.image} fallbackSrc={avatar.legacyImage} name={avatar.name} />
         <button type="button" aria-label={`Next avatar for ${label}`} onClick={() => move(1)}>›</button>
       </div>
       <div className="seat-avatar-name">{avatar.name}</div>

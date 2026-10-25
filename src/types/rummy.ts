@@ -12,6 +12,8 @@ export interface AvatarOption {
   name: string;
   role: string;
   image: string;
+  tableImage: string;
+  legacyImage: string;
   color: string;
 }
 
@@ -72,6 +74,8 @@ export interface Player {
   avatarId: string;
   avatarName: string;
   avatarImage: string;
+  avatarTableImage: string;
+  avatarLegacyImage: string;
   avatarColor: string;
   score: number;
   hand: Card[];
