@@ -1369,3 +1369,38 @@ button:not(:disabled) { transition: transform 160ms ease, box-shadow 160ms ease,
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+
+/* Transparent characters: no portrait medallions or trading-card backdrops. */
+.avatar-feature {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.avatar-img {
+  width: min(240px, 58vw);
+  height: 320px;
+  max-height: 42vh;
+  object-fit: contain;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.seat-avatar {
+  width: 70px;
+  height: 90px;
+  object-fit: contain;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.player .avatar {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+.player .avatar img {
+  object-fit: contain;
+  background: transparent;
+}
