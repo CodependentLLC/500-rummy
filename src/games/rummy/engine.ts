@@ -14,7 +14,7 @@ function makeDeck() {
 }
 
 function playerFromAvatar(id: number, avatar: AvatarOption, name: string, score = 0): Player {
-  return { id, name, avatarId: avatar.id, avatarName: avatar.name, avatarImage: avatar.image, avatarColor: avatar.color, score, hand: [], melds: [], isAI: id > 0 };
+  return { id, name, avatarId: avatar.id, avatarName: avatar.name, avatarImage: avatar.image, avatarTableImage: avatar.tableImage, avatarLegacyImage: avatar.legacyImage, avatarColor: avatar.color, score, hand: [], melds: [], isAI: id > 0 };
 }
 
 export function createGame(playerCount: number, seats: SeatConfig[], scores: number[] = [], difficulty: ComputerDifficulty = "normal"): GameState {
