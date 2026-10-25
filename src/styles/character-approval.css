@@ -1,0 +1,18 @@
+/* Character approval review page */
+.approval-gallery{min-height:100vh;background:#101416;color:#f2efec;padding:clamp(16px,3vw,48px);font-family:system-ui,sans-serif}
+.approval-header{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;max-width:1450px;margin:0 auto 24px}
+.approval-header h1{font-size:clamp(27px,4vw,46px);margin:8px 0}.approval-header p{max-width:780px;color:#b8bdbf;line-height:1.5}
+.approval-eyebrow{font-size:12px;letter-spacing:.16em;color:#d3b777!important}
+.approval-header a{color:#f3d59b;white-space:nowrap}.approval-toolbar{max-width:1450px;margin:0 auto 22px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+.approval-toolbar select{margin-left:8px;padding:9px;border-radius:7px;color:white;background:#242b2d;border:1px solid #536063}
+.approval-grid{display:grid;max-width:1450px;margin:auto;grid-template-columns:repeat(auto-fit,minmax(min(100%,570px),1fr));gap:22px}
+.approval-character{border:1px solid #41494c;border-radius:16px;background:#1a2022;padding:16px}
+.approval-character-title{display:flex;align-items:baseline;gap:16px}.approval-character h2{font-size:21px;margin:0 0 14px}.approval-character-title span{color:#b1b9ba;font-size:13px}
+.approval-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.approval-pose{min-width:0}.approval-pose-head{display:grid;gap:5px;min-height:62px;font-size:13px}
+.approval-pose-head strong{font-size:11px;font-weight:600}.approval-pose-head .pending{color:#f6bd77}.approval-pose-head .ready{color:#95d8b0}
+.approval-art{height:300px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:repeating-conic-gradient(#4b5354 0% 25%,#313839 0% 50%) 50%/24px 24px}
+.approval-art img{object-fit:contain;width:100%;height:100%}.approval-filename{font:10px/1.4 monospace;overflow-wrap:anywhere;color:#a7b1b1;margin:8px 0}
+.approval-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}.approval-actions span{margin-right:auto;font-size:12px;color:#c8cecd}
+.approval-actions button{background:#2e3939;border:1px solid #566362;border-radius:7px;color:white;cursor:pointer;padding:8px;font-size:12px}
+@media(max-width:650px){.approval-header{display:block}.approval-pair{gap:8px}.approval-art{height:215px}}
